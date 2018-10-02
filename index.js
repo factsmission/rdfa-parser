@@ -3,8 +3,13 @@ import dataModel from "@rdfjs/data-model";
 function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target) {
     if (element.nodeType === 1) {
         console.log(element.nodeName);
-        subject = element.getAttribute("resource") ? 
-            evaluateRealtiveURI(element.getAttribute("resource")) : subject;
+        subject = (element.getAttribute("resource") ? 
+            evaluateRealtiveURI(element.getAttribute("resource")) :
+            ( element.getAttribute("typeof") ?
+                dataModel.blankNode():
+                subject
+            )
+        );
         noPrefixMapping = element.getAttribute("vocab") ? element.getAttribute("vocab") : noPrefixMapping;
         if (element.getAttribute("property")) {
             let predicate = evaluateCURIE(element.getAttribute("property"), prefixMappings, defaultPrefixMapping, noPrefixMapping);
@@ -28,10 +33,10 @@ function evaluateRealtiveURI(relativeURI) {
 }
 
 function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapping) {
+    let colonPos = curie.indexOf(":");
     if (curie.startsWith("_")) {
-        return dataModel.blankNode(curie);
+        return dataModel.blankNode(curie.substring(colonPos+1));
     } else {
-        let colonPos = curie.indexOf(":");
         if (colonPos === -1) {
             if (!noPrefixMapping) {
                 throw new Error("Using curies without prefix, but no vocab defined");
