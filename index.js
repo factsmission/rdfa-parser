@@ -11,6 +11,11 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
             )
         );
         noPrefixMapping = element.getAttribute("vocab") ? element.getAttribute("vocab") : noPrefixMapping;
+        if (element.getAttribute("typeof")) {
+            let predicate = dataModel.namedNode("https://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+            let object = evaluateCURIE(element.getAttribute("typeof"), prefixMappings, defaultPrefixMapping, noPrefixMapping);
+            target(subject, predicate, object);
+        }
         if (element.getAttribute("property")) {
             let predicate = evaluateCURIE(element.getAttribute("property"), prefixMappings, defaultPrefixMapping, noPrefixMapping);
             let object = (element.href ?
