@@ -6,38 +6,44 @@
     <script src="example.js"></script>
 </head>
 
-<body vocab="http://purl.org/dc/terms/">
+<body vocab="http://purl.org/dc/terms/" prefix="dc: http://purl.org/dc/terms/ schema: http://schema.org/">
     <h1 property="title">Alice’s Blog</h1>
-    <div resource="/alice/posts/trouble_with_bob">
+    <div resource="/alice/posts/trouble_with_bob" typeof="schema:BlogPosting">
         <h2 property="title">The trouble with Bob</h2>
         <p>Date: <span property="created">2011-09-10</span></p>
-        <p>By: <span property="creator">Alice</span></p>
-        The trouble with Bob is that he takes much better photos than I do:
-        <div resource="http://example.com/bob/photos/sunset.jpg">
-            <img src="http://example.com/bob/photos/sunset.jpg" />
-            <span property="title">Beautiful Sunset</span>
-            by <span property="creator">Bob</span>.
+        <p>By: <span property="dc:creator schema:creator" resource="#me">Alice</span></p>
+        <div property="schema:articleBody">
+            The trouble with Bob is that he takes much better photos than I do:
+            <div resource="http://example.com/bob/photos/sunset.jpg">
+                <img src="http://example.com/bob/photos/sunset.jpg" />
+                <span property="title">Beautiful Sunset</span>
+                by <span property="creator">Bob</span>.
+            </div>
         </div>
-        <link property="rdfa:copy" href="#ccpattern" />
+        <link property="rdfa:copy" src="#ccpattern" />
     </div>
-    <div resource="/alice/posts/jos_barbecue">
+    <div resource="/alice/posts/jos_barbecue" typeof="schema:BlogPosting">
         <h2 property="title">Jo’s Barbecue</h2>
         <p>Date: <span property="created">2011-09-14</span></p>
-        <h3 property="creator">Eve</h3>
-        <link property="rdfa:copy" href="#ccpattern" />
+        <p>By: <span property="creator" resource="#eve">Eve</span></p>
+        <link property="rdfa:copy" src="#ccpattern" />
+        <div property="schema:articleBody">
+            ...
+        </div>
     </div>
     <hr>
-    <div vocab="http://xmlns.com/foaf/0.1/" typeof="Person">
+    <div resource="#me" prefix="foaf: http://xmlns.com/foaf/0.1/ schema: http://schema.org/"  vocab="http://xmlns.com/foaf/0.1/" typeof="foaf:Person schema:Person">
+        <h2 property="name">Alice Birpemswick</h2>
         <p>
-            <span property="name">Alice Birpemswick</span>,
-            Email: <a property="mbox" href="mailto:alice@example.com">alice@example.com</a>,
-            Phone: <a property="phone" href="tel:+1-617-555-7332">+1 617.555.7332</a>
+            Email: <a property="mbox" href="mailto:alice@example.com">alice@example.com</a>,<br>
+            Phone: <a property="phone" href="tel:+1-617-555-7332">+1 617.555.7332</a><br>
         </p>
+        <h3>My buddies</h3>
         <ul>
             <li property="knows" typeof="Person">
                 <a property="homepage" href="http://example.com/bob/"><span property="name">Bob</span></a>
             </li>
-            <li property="knows" typeof="Person">
+            <li property="knows" resource="#eve" typeof="Person">
                 <a property="homepage" href="http://example.com/eve/"><span property="name">Eve</span></a>
             </li>
             <li property="knows" typeof="Person">
