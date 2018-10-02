@@ -114,7 +114,21 @@ function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapp
     }
 }
 
-export function parse(element, target) {
+/**
+ * Parses a Node / HTMLElement with RDFa
+ * 
+ * @param {Node} element - Node / Element to be parsed
+ * @param {Function} target - Function to give (subject,predicate,object). Gets called every time a triple is found
+ * @param {boolean} [initialContext=false] - If https://www.w3.org/2013/json-ld-context/rdfa11 should be loaded as initial set of prefixes
+ */
+export function parse(element, target, initialContext) {
     let currentSubject = dataModel.namedNode(window.location);
-    parseElement(element, {}, null, null, currentSubject, target);
+    if (initialContext) {
+        fetch("https://www.w3.org/2013/json-ld-context/rdfa11").then(r => r.json()).then(response => {
+            console.log(response);
+            parseElement(element, response["@context"], null, null, currentSubject, target);
+        })
+    } else {
+        parseElement(element, {}, null, null, currentSubject, target);
+    }
 }
