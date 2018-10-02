@@ -3,15 +3,28 @@ import dataModel from "@rdfjs/data-model";
 function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target) {
     if (element.nodeType === 1) {
         console.log(element.nodeName);
+        subject = element.getAttribute("resource") ? 
+            evaluateRealtiveURI(element.getAttribute("resource")) : subject;
         noPrefixMapping = element.getAttribute("vocab") ? element.getAttribute("vocab") : noPrefixMapping;
         if (element.getAttribute("property")) {
             let predicate = evaluateCURIE(element.getAttribute("property"), prefixMappings, defaultPrefixMapping, noPrefixMapping);
-            target(subject, predicate, dataModel.literal(element.innerHTML));
+            let object = (element.href ?
+                dataModel.namedNode(new URL(element.href, window.location.href).href) :
+                (element.src ?
+                    dataModel.namedNode(new URL(element.src, window.location.href).href) :
+                    dataModel.literal(element.innerHTML)
+                )
+            );
+            target(subject, predicate, object);
         }
         element.childNodes.forEach(child => {
             parseElement(child, prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target);
         });
     }
+}
+
+function evaluateRealtiveURI(relativeURI) {
+    return dataModel.namedNode(new URL(relativeURI, window.location.href).href);
 }
 
 function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapping) {

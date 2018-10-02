@@ -7,8 +7,28 @@
 </head>
 
 <body vocab="http://purl.org/dc/terms/">
-    <h1 property="title">The Trouble with Bob</h1>
-    <p>Date: <span property="http://purl.org/dc/terms/created">2011-09-10</span></p>
+    <h1 property="title">Alice’s Blog</h1>
+    <div resource="/alice/posts/trouble_with_bob">
+        <h2 property="title">The trouble with Bob</h2>
+        <p>Date: <span property="created">2011-09-10</span></p>
+        <p>By: <span property="creator">Alice</span></p>
+        The trouble with Bob is that he takes much better photos than I do:
+        <div resource="http://example.com/bob/photos/sunset.jpg">
+            <img src="http://example.com/bob/photos/sunset.jpg" />
+            <span property="title">Beautiful Sunset</span>
+            by <span property="creator">Bob</span>.
+        </div>
+    </div>
+    <div resource="/alice/posts/jos_barbecue">
+        <h2 property="title">Jo’s Barbecue</h2>
+        <p>Date: <span property="created">2011-09-14</span></p>
+        <h3 property="creator">Eve</h3>
+    </div>
+    <footer>
+        <p>All content on this site is licensed under
+            <a property="http://creativecommons.org/ns#license" href="http://creativecommons.org/licenses/by/3.0/">
+                a Creative Commons License</a>. ©2011 Alice Birpemswick.</p>
+    </footer>
 </body>
 
 </html>
