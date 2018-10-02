@@ -18,25 +18,39 @@
             <span property="title">Beautiful Sunset</span>
             by <span property="creator">Bob</span>.
         </div>
+        <link property="rdfa:copy" href="#ccpattern" />
     </div>
     <div resource="/alice/posts/jos_barbecue">
         <h2 property="title">Jo’s Barbecue</h2>
         <p>Date: <span property="created">2011-09-14</span></p>
         <h3 property="creator">Eve</h3>
+        <link property="rdfa:copy" href="#ccpattern" />
     </div>
-    <footer>
-        <hr>
-        <div vocab="http://xmlns.com/foaf/0.1/" typeof="Person">
-            <p>
-                <span property="name">Alice Birpemswick</span>,
-                Email: <a property="mbox" href="mailto:alice@example.com">alice@example.com</a>,
-                Phone: <a property="phone" href="tel:+1-617-555-7332">+1 617.555.7332</a>
-            </p>
-        </div>
-        <p>All content on this site is licensed under
-            <a property="http://creativecommons.org/ns#license" href="http://creativecommons.org/licenses/by/3.0/">
-                a Creative Commons License</a>. ©2011 Alice Birpemswick.</p>
-    </footer>
+    <hr>
+    <div vocab="http://xmlns.com/foaf/0.1/" typeof="Person">
+        <p>
+            <span property="name">Alice Birpemswick</span>,
+            Email: <a property="mbox" href="mailto:alice@example.com">alice@example.com</a>,
+            Phone: <a property="phone" href="tel:+1-617-555-7332">+1 617.555.7332</a>
+        </p>
+        <ul>
+            <li property="knows" typeof="Person">
+                <a property="homepage" href="http://example.com/bob/"><span property="name">Bob</span></a>
+            </li>
+            <li property="knows" typeof="Person">
+                <a property="homepage" href="http://example.com/eve/"><span property="name">Eve</span></a>
+            </li>
+            <li property="knows" typeof="Person">
+                <a property="homepage" href="http://example.com/manu/"><span property="name">Manu</span></a>
+            </li>
+        </ul>
+    </div>
+    <hr>
+    <div id="ccpattern" resource="#ccpattern" typeof="rdfa:Pattern">
+        <p vocab="http://creativecommons.org/ns#">All content on this blog entry is licensed under
+            <a property="license" href="http://creativecommons.org/licenses/by/3.0/">
+                a Creative Commons License</a>. <span property="attributionName">©2011 Alice Birpemswick</span>.</p>
+    </div>
 </body>
 
 </html>

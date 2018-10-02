@@ -2,21 +2,26 @@ import dataModel from "@rdfjs/data-model";
 
 function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target) {
     if (element.nodeType === 1) {
-        console.log(element.nodeName);
-        subject = (element.getAttribute("resource") ? 
+        //console.log(element.nodeName);
+        noPrefixMapping = element.getAttribute("vocab") ? element.getAttribute("vocab") : noPrefixMapping;
+        let bnode = dataModel.blankNode();
+        if (element.getAttribute("typeof")) {
+            if (element.getAttribute("property")) {
+                let predicate = evaluateCURIE(element.getAttribute("property"), prefixMappings, defaultPrefixMapping, noPrefixMapping);
+                target(subject, predicate, bnode);
+            }
+            let predicate = dataModel.namedNode("https://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+            let object = evaluateCURIE(element.getAttribute("typeof"), prefixMappings, defaultPrefixMapping, noPrefixMapping);
+            target(bnode, predicate, object);
+        }
+        subject = (element.getAttribute("resource") ?
             evaluateRealtiveURI(element.getAttribute("resource")) :
-            ( element.getAttribute("typeof") ?
-                dataModel.blankNode():
+            (element.getAttribute("typeof") ?
+                bnode :
                 subject
             )
         );
-        noPrefixMapping = element.getAttribute("vocab") ? element.getAttribute("vocab") : noPrefixMapping;
-        if (element.getAttribute("typeof")) {
-            let predicate = dataModel.namedNode("https://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-            let object = evaluateCURIE(element.getAttribute("typeof"), prefixMappings, defaultPrefixMapping, noPrefixMapping);
-            target(subject, predicate, object);
-        }
-        if (element.getAttribute("property")) {
+        if (!element.getAttribute("typeof") && element.getAttribute("property")) {
             let predicate = evaluateCURIE(element.getAttribute("property"), prefixMappings, defaultPrefixMapping, noPrefixMapping);
             let object = (element.href ?
                 dataModel.namedNode(new URL(element.href, window.location.href).href) :
@@ -40,24 +45,24 @@ function evaluateRealtiveURI(relativeURI) {
 function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapping) {
     let colonPos = curie.indexOf(":");
     if (curie.startsWith("_")) {
-        return dataModel.blankNode(curie.substring(colonPos+1));
+        return dataModel.blankNode(curie.substring(colonPos + 1));
     } else {
         if (colonPos === -1) {
             if (!noPrefixMapping) {
                 throw new Error("Using curies without prefix, but no vocab defined");
             }
-            return dataModel.namedNode(noPrefixMapping+curie);
+            return dataModel.namedNode(noPrefixMapping + curie);
         }
         if (colonPos === 0) {
             if (!noPrefixMapping) {
                 throw new Error("Using curies without prefix, but no vocab defined");
             }
-            return dataModel.namedNode(defaultPrefixMapping+curie.substring(1));
+            return dataModel.namedNode(defaultPrefixMapping + curie.substring(1));
         }
         let prefix = curie.substring(0, colonPos);
-        let suffix = curie.substring(colonPos+1);
+        let suffix = curie.substring(colonPos + 1);
         if (prefixMappings[prefix]) {
-            return dataModel.namedNode(prefixMappings[prefix]+suffix);
+            return dataModel.namedNode(prefixMappings[prefix] + suffix);
         } else {
             return dataModel.namedNode(curie);
         }
