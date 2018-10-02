@@ -18,7 +18,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
         }
         noPrefixMapping = element.getAttribute("vocab") ? element.getAttribute("vocab") : noPrefixMapping;
         if (element.getAttribute("typeof") === "rdfa:Pattern") {
-            console.log("Pattern: " + element.nodeName + (element.id ? "#" + element.id : ""));
+            //console.log("Pattern: " + element.nodeName + (element.id ? "#" + element.id : ""));
         } else {
             let oldsubject = subject;
             subject = (element.getAttribute("resource") ?
@@ -50,30 +50,36 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                 });
             } else if (element.getAttribute("property")) {
                 element.getAttribute("property").trim().split(/\s+/).forEach(property => {
-                        let predicate = evaluateCURIE(property, prefixMappings, defaultPrefixMapping, noPrefixMapping);
-                        if (property === "rdfa:copy") {
-                            if (element.getAttribute("href")) {
-                                parseElement(document.querySelector(element.getAttribute("href")), prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target);
-                            } else if (element.getAttribute("src")) {
-                                parseElement(document.querySelector(element.getAttribute("src")), prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target);
-                            } else {
-                                throw new Error("Using rdfa:copy without href or src");
-                            }
-                        } else if (element.getAttribute("resource")) {
-                            target(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource")));
+                    let predicate = evaluateCURIE(property, prefixMappings, defaultPrefixMapping, noPrefixMapping);
+                    if (property === "rdfa:copy") {
+                        if (element.getAttribute("href")) {
+                            parseElement(document.querySelector(element.getAttribute("href")), prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target);
+                        } else if (element.getAttribute("src")) {
+                            parseElement(document.querySelector(element.getAttribute("src")), prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target);
                         } else {
-                            let object = (element.href ?
+                            throw new Error("Using rdfa:copy without href or src");
+                        }
+                    } else if (element.getAttribute("resource")) {
+                        target(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource")));
+                    } else {
+                        let dataType = (element.getAttribute("datatype") ?
+                            evaluateCURIE(element.getAttribute("datatype"), prefixMappings, defaultPrefixMapping, noPrefixMapping) :
+                            null)
+                        let object = (element.getAttribute("content") ?
+                            dataModel.literal(element.getAttribute("content"), dataType) :
+                            (element.href ?
                                 dataModel.namedNode(new URL(element.href, window.location.href).href) :
                                 (element.src ?
                                     dataModel.namedNode(new URL(element.src, window.location.href).href) :
-                                    dataModel.literal(element.innerHTML)
+                                    dataModel.literal(element.innerHTML, dataType)
                                 )
-                            );
-                            target(subject, predicate, object);
-                        }
-                    });
-                }
+                            )
+                        );
+                        target(subject, predicate, object);
+                    }
+                });
             }
+        }
         element.childNodes.forEach(child => {
             if ((child.nodeType === 1) && (child.getAttribute("typeof") !== "rdfa:Pattern")) {
                 //rdfa:Patterns must be ignored except when copied (https://www.w3.org/TR/html-rdfa/#implementing-property-copying)
@@ -125,7 +131,6 @@ export function parse(element, target, initialContext) {
     let currentSubject = dataModel.namedNode(window.location);
     if (initialContext) {
         fetch("https://www.w3.org/2013/json-ld-context/rdfa11").then(r => r.json()).then(response => {
-            console.log(response);
             parseElement(element, response["@context"], null, null, currentSubject, target);
         })
     } else {
