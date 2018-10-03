@@ -1,5 +1,8 @@
 window.onload = () => {
-    RDFa.parse(document.documentElement, (s,p,o) => {
+    RDFa.parse(document.documentElement, (quad) => {
+        let s = quad.subject;
+        let p = quad.predicate;
+        let o = quad.object;
         console.log(
             (s.termType === "NamedNode" ?
                 "<"+s.value+">" :

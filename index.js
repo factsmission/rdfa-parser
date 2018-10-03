@@ -1,6 +1,9 @@
 import dataModel from "@rdfjs/data-model";
 
 function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target) {
+    function invokeTarget(subject, predicate, object) {
+        target(dataModel.quad(subject, predicate, object));
+    }
     if (element.nodeType === 1) {
         //console.log(element.nodeName);
         if (element.getAttribute("prefix")) {
@@ -34,18 +37,18 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                         element.getAttribute("property").trim().split(/\s+/).forEach(property => {
                             let predicate = evaluateCURIE(property, prefixMappings, defaultPrefixMapping, noPrefixMapping);
                             if (element.getAttribute("resource")) {
-                                target(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource")));
+                                invokeTarget(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource")));
                             } else {
-                                target(oldsubject, predicate, subject);
+                                invokeTarget(oldsubject, predicate, subject);
                             }
                         });
                     }
                     let predicate = dataModel.namedNode("https://www.w3.org/1999/02/22-rdf-syntax-ns#type");
                     let object = evaluateCURIE(type, prefixMappings, defaultPrefixMapping, noPrefixMapping);
                     if (element.getAttribute("resource")) {
-                        target(evaluateRealtiveURI(element.getAttribute("resource")), predicate, object);
+                        invokeTarget(evaluateRealtiveURI(element.getAttribute("resource")), predicate, object);
                     } else {
-                        target(subject, predicate, object);
+                        invokeTarget(subject, predicate, object);
                     }
                 });
             } else if (element.getAttribute("property")) {
@@ -60,7 +63,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                             throw new Error("Using rdfa:copy without href or src");
                         }
                     } else if (element.getAttribute("resource")) {
-                        target(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource")));
+                        invokeTarget(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource")));
                     } else {
                         let dataType = (element.getAttribute("datatype") ?
                             evaluateCURIE(element.getAttribute("datatype"), prefixMappings, defaultPrefixMapping, noPrefixMapping) :
@@ -75,7 +78,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                                 )
                             )
                         );
-                        target(subject, predicate, object);
+                        invokeTarget(subject, predicate, object);
                     }
                 });
             }
