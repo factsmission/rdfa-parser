@@ -12,15 +12,15 @@ window.onload = () => {
             p.value +
             "> " +
             (o.termType === "NamedNode" ?
-                "<"+o.value+">" :
+                "<"+o.value+"> ." :
                 (o.termType === "Literal" ?
                     (o.datatype.value !== "http://www.w3.org/2001/XMLSchema#string" ?
                         "\"\"\""+o.value+"\"\"\"^^<" +
                         o.datatype.value +
-                        ">" :
-                        "\"\"\""+o.value+"\"\"\""
+                        "> ." :
+                        "\"\"\""+o.value+"\"\"\" ."
                     ) :
-                    o.value
+                    o.value+" ."
                 )
             )
         );
