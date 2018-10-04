@@ -30,7 +30,7 @@ window.onload = () => {
 
 //Parsing as String
 /*window.onload = () => {
-    RDFa.parseText(document.documentElement.innerHTML.toString(), (quad) => {
+    RDFa.parseFromString(document.documentElement.innerHTML.toString(), (quad) => {
         let s = quad.subject;
         let p = quad.predicate;
         let o = quad.object;

@@ -180,7 +180,7 @@ export function parse(element, target, initialContext) {
     }
 }
 
-export function parseText(text, target, initialContext) {
+export function parseFromString(text, target, initialContext) {
     let currentSubject = dataModel.namedNode(window.location);
     let domParser = new (require("xmldom").DOMParser)();
     let documentElement = domParser.parseFromString(text,'text/html');
