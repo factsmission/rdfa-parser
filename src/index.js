@@ -5,7 +5,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
         target(dataModel.quad(subject, predicate, object));
     }
     if (element.nodeType === 1) {
-        //console.log(element.nodeName);
+        console.log(element.nodeName);
         if (element.getAttribute("prefix")) {
             let prefixArray = element.getAttribute("prefix").trim().split(/:\s+|\s+/);
             for (let i = 0; i < prefixArray.length; i = i + 2) {
@@ -83,7 +83,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                 });
             }
         }
-        element.childNodes.forEach(child => {
+        Array.from(element.childNodes).forEach(child => {
             //console.log(child.nodeName +" "+child.nodeType)
             if ((child.nodeType === 1) && (child.getAttribute("typeof") !== "rdfa:Pattern")) {
                 //rdfa:Patterns must be ignored except when copied (https://www.w3.org/TR/html-rdfa/#implementing-property-copying)
@@ -129,29 +129,74 @@ function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapp
  * 
  * @param {Node} element - Node / Element to be parsed
  * @param {Function} target - Function to give (subject,predicate,object). Gets called every time a triple is found
- * @param {boolean} [initialContext=false] - If https://www.w3.org/2013/json-ld-context/rdfa11 should be loaded as initial set of prefixes
+ * @param {IRI} [base=null] - baseIRI to be used instead of window.location
+ * @param {boolean} [useInitialContext=false] - If https://www.w3.org/2013/json-ld-context/rdfa11 should be loaded as initial set of prefixes
  */
-export function parse(element, target, initialContext) {
-    let currentSubject = dataModel.namedNode(window.location);
-    if (initialContext) {
-        fetch("https://www.w3.org/2013/json-ld-context/rdfa11").then(r => r.json()).then(response => {
-            parseElement(element, response["@context"], null, null, currentSubject, target);
-        })
-    } else {
-        parseElement(element, {}, null, null, currentSubject, target);
-    }
+export function parse(element, target, base, useInitialContext) {
+    let currentSubject = dataModel.namedNode(base || window.location);
+    let context = useInitialContext ?
+        {} :
+        {
+            "as": "https://www.w3.org/ns/activitystreams#",
+            "dqv": "http://www.w3.org/ns/dqv#",
+            "duv": "https://www.w3.org/TR/vocab-duv#",
+            "cat": "http://www.w3.org/ns/dcat#",
+            "qb": "http://purl.org/linked-data/cube#",
+            "grddl": "http://www.w3.org/2003/g/data-view#",
+            "ldp": "http://www.w3.org/ns/ldp#",
+            "oa": "http://www.w3.org/ns/oa#",
+            "ma": "http://www.w3.org/ns/ma-ont#",
+            "owl": "http://www.w3.org/2002/07/owl#",
+            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            "rdfa": "http://www.w3.org/ns/rdfa#",
+            "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+            "rif": "http://www.w3.org/2007/rif#",
+            "rr": "http://www.w3.org/ns/r2rml#",
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "skosxl": "http://www.w3.org/2008/05/skos-xl#",
+            "wdr": "http://www.w3.org/2007/05/powder#",
+            "void": "http://rdfs.org/ns/void#",
+            "wdrs": "http://www.w3.org/2007/05/powder-s#",
+            "xhv": "http://www.w3.org/1999/xhtml/vocab#",
+            "xml": "http://www.w3.org/XML/1998/namespace",
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "prov": "http://www.w3.org/ns/prov#",
+            "sd": "http://www.w3.org/ns/sparql-service-description#",
+            "org": "http://www.w3.org/ns/org#",
+            "gldp": "http://www.w3.org/ns/people#",
+            "cnt": "http://www.w3.org/2008/content#",
+            "dcat": "http://www.w3.org/ns/dcat#",
+            "earl": "http://www.w3.org/ns/earl#",
+            "ht": "http://www.w3.org/2006/http#",
+            "ptr": "http://www.w3.org/2009/pointers#",
+            "cc": "http://creativecommons.org/ns#",
+            "ctag": "http://commontag.org/ns#",
+            "dc": "http://purl.org/dc/terms/",
+            "dc11": "http://purl.org/dc/elements/1.1/",
+            "dcterms": "http://purl.org/dc/terms/",
+            "foaf": "http://xmlns.com/foaf/0.1/",
+            "gr": "http://purl.org/goodrelations/v1#",
+            "ical": "http://www.w3.org/2002/12/cal/icaltzd#",
+            "og": "http://ogp.me/ns#",
+            "rev": "http://purl.org/stuff/rev#",
+            "sioc": "http://rdfs.org/sioc/ns#",
+            "v": "http://rdf.data-vocabulary.org/#",
+            "vcard": "http://www.w3.org/2006/vcard/ns#",
+            "schema": "http://schema.org/",
+            "describedby": "http://www.w3.org/2007/05/powder-s#describedby",
+            "license": "http://www.w3.org/1999/xhtml/vocab#license",
+            "role": "http://www.w3.org/1999/xhtml/vocab#role",
+            "ssn": "http://www.w3.org/ns/ssn/",
+            "sosa":"http://www.w3.org/ns/sosa/",
+            "time":"http://www.w3.org/2006/time#"
+          };
+    parseElement(element, context, null, null, currentSubject, target);
+    return Promise.resolve(true);
 }
 
-export function parseFromString(text, target, initialContext) {
-    let currentSubject = dataModel.namedNode(window.location);
+export function parseFromString(text, target, base, initialContext) {
     let domParser = new (require("xmldom").DOMParser)();
     let documentElement = domParser.parseFromString(text,'text/html');
     let element = documentElement.documentElement;
-    if (initialContext) {
-        fetch("https://www.w3.org/2013/json-ld-context/rdfa11").then(r => r.json()).then(response => {
-            parseElement(element, response["@context"], null, null, currentSubject, target);
-        })
-    } else {
-        parseElement(element, {}, null, null, currentSubject, target);
-    }
+    return parse(element, target, base, initialContext);
 }

@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
-  entry: path.resolve(__dirname, 'index.js'),
+  entry: path.resolve(__dirname, 'src', 'index.js'),
   output: {
     path: path.resolve(__dirname, 'distribution', "latest"),
     filename: 'rdfa.js',
