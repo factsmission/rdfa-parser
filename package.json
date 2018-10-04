@@ -13,7 +13,8 @@
     "build": "cross-var \"webpack -p && ncp distribution/latest distribution/$npm_package_version\""
   },
   "dependencies": {
-    "@rdfjs/data-model": "^1.1.0"
+    "@rdfjs/data-model": "^1.1.0",
+    "xmldom": "^0.1.27"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

@@ -122,6 +122,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
             }
         }
         element.childNodes.forEach(child => {
+            //console.log(child.nodeName +" "+child.nodeType)
             if ((child.nodeType === 1) && (child.getAttribute("typeof") !== "rdfa:Pattern")) {
                 //rdfa:Patterns must be ignored except when copied (https://www.w3.org/TR/html-rdfa/#implementing-property-copying)
                 parseElement(child, prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target, (relation ? relation : null));
@@ -180,10 +181,10 @@ export function parse(element, target, initialContext) {
 }
 
 export function parseText(text, target, initialContext) {
-    let domParser = new DOMParser();
+    let currentSubject = dataModel.namedNode(window.location);
+    let domParser = new (require("xmldom").DOMParser)();
     let documentElement = domParser.parseFromString(text,'text/html');
     let element = documentElement.documentElement;
-    let currentSubject = dataModel.namedNode(window.location);
     if (initialContext) {
         fetch("https://www.w3.org/2013/json-ld-context/rdfa11").then(r => r.json()).then(response => {
             parseElement(element, response["@context"], null, null, currentSubject, target);
