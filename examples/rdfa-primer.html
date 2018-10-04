@@ -2,17 +2,13 @@
 
 <head>
     <title>rdfa-parser</title>
-    <script src="../rdfa.js"></script>
+    <script src="rdfa.js"></script>
+    <script type="text/javascript" src="https://retog.github.io/ext-rdflib/latest/rdf.js"></script>
     <script src="example.js"></script>
 </head>
 
 <body vocab="http://purl.org/dc/terms/" prefix="dc: http://purl.org/dc/terms/ schema: http://schema.org/">
     <h1 property="title">Alice’s Blog</h1>
-    <ul>
-        <li about="/alice/posts/trouble_with_bob" property="title">The trouble with Bob</li>
-        <li about="/alice/posts/jos_barbecue" property="title">Jo's Barbecue</li>
-        ...
-    </ul>
     <div resource="/alice/posts/trouble_with_bob" typeof="schema:BlogPosting" prefix="og: http://ogp.me/ns#" >
         <meta property="og:title" content="The Trouble with Bob" />
         <meta property="og:type" content="text" />
@@ -25,7 +21,7 @@
             <div resource="http://example.com/bob/photos/sunset.jpg">
                 <img src="http://example.com/bob/photos/sunset.jpg" />
                 <span property="title">Beautiful Sunset</span>
-                by <span property="creator" resource="http://example.com/bob/#me">Bob</span>.
+                by <span property="creator">Bob</span>.
             </div>
         </div>
         <link property="rdfa:copy" src="#ccpattern" />
@@ -33,7 +29,7 @@
     <div resource="/alice/posts/jos_barbecue" typeof="schema:BlogPosting">
         <h2 property="title">Jo’s Barbecue</h2>
         <p>Date: <span property="created" content="2011-09-14">14th of September, 2011</span></p>
-        <p>By: <span property="creator" resource="http://example.com/eve/#me">Eve</span></p>
+        <p>By: <span property="creator" resource="#eve">Eve</span></p>
         <link property="rdfa:copy" src="#ccpattern" />
         <div property="schema:articleBody">
             ...
@@ -47,17 +43,16 @@
             Phone: <a property="phone" href="tel:+1-617-555-7332">+1 617.555.7332</a><br>
         </p>
         <h3>My buddies</h3>
-        <ul rel="foaf:knows">
-                <li resource="http://example.com/bob/#me" typeof="Person">
-                  <a property="homepage" href="http://example.com/bob/"><span property="name">Bob</span></a>
-                </li>
-                <li resource="http://example.com/eve/#me" typeof="Person">
-                  <a property="homepage" href="http://example.com/eve/"><span property="name">Eve</span></a>
-                </li>
-                <li resource="http://example.com/manu/#me" typeof="Person">
-                  <a property="homepage" href="http://example.com/manu/"><span property="name">Manu</span></a>
-                </li>
-             </ul>
+        <ul>
+            <li property="knows" typeof="Person">
+                <a property="homepage" href="http://example.com/bob/"><span property="name">Bob</span></a>
+            </li>
+            <li property="knows" resource="#eve" typeof="Person">
+                <a property="homepage" href="http://example.com/eve/"><span property="name">Eve</span></a>
+            </li>
+            <li property="knows" typeof="Person">
+                <a property="homepage" href="http://example.com/manu/"><span property="name">Manu</span></a>
+            </li>
         </ul>
     </div>
     <hr>
