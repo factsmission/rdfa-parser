@@ -178,3 +178,17 @@ export function parse(element, target, initialContext) {
         parseElement(element, {}, null, null, currentSubject, target);
     }
 }
+
+export function parseText(text, target, initialContext) {
+    let domParser = new DOMParser();
+    let documentElement = domParser.parseFromString(text,'text/html');
+    let element = documentElement.documentElement;
+    let currentSubject = dataModel.namedNode(window.location);
+    if (initialContext) {
+        fetch("https://www.w3.org/2013/json-ld-context/rdfa11").then(r => r.json()).then(response => {
+            parseElement(element, response["@context"], null, null, currentSubject, target);
+        })
+    } else {
+        parseElement(element, {}, null, null, currentSubject, target);
+    }
+}

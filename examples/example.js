@@ -1,5 +1,5 @@
 window.onload = () => {
-    RDFa.parse(document.documentElement, (quad) => {
+    RDFa.parseText(document.documentElement.innerHTML.toString(), (quad) => {
         let s = quad.subject;
         let p = quad.predicate;
         let o = quad.object;
