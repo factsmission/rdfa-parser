@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml" prefix="xsd: http://www.w3.org/2001/XMLSchema#
+        dc: http://purl.org/dc/terms/ bibo: http://purl.org/ontology/bibo/">
+
+<head>
+    <title>My Home Page</title>
+    <script src="rdfa.js"></script>
+    <script type="text/javascript" src="http://rdf-ext.bergnet.org/dist/rdf-ext-all-latest.js"></script>
+    <script src="example-rdfext.js"></script>
+</head>
+
+<body>
+    <h2>Note</h2>
+    At the time of publishing this wasn't working because of an outdated version of rdf-ext at <em>http://rdf-ext.bergnet.org/dist/rdf-ext-all-latest.js</em>. As soon as that resource is updated, it should work again.
+    <h1 property="dc:title">My home-page</h1>
+    <p>Last modified: <span property="dc:modified" content="2015-09-16T16:00:00-05:00" datatype="xsd:dateTime">16
+            September 2015</span>.</p>
+    I think White's book
+    '<span about="urn:ISBN:0091808189" typeof="bibo:Book" property="dc:title">Canteen Cuisine</span>'
+    is well worth getting since although it's quite advanced stuff, he
+    makes it pretty easy to follow. You might also like
+    <span about="urn:ISBN:1596913614" typeof="bibo:Book" property="dc:description">White's autobiography</span>.
+
+</body>
+
+</html>
