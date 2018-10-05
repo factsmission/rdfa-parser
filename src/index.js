@@ -56,9 +56,9 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                     let predicate = evaluateCURIE(property, prefixMappings, defaultPrefixMapping, noPrefixMapping);
                     if (property === "rdfa:copy") {
                         if (element.getAttribute("href")) {
-                            parseElement(document.querySelector(element.getAttribute("href")), prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target);
+                            parseElement(document.querySelector(element.getAttribute("href")), prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target,);
                         } else if (element.getAttribute("src")) {
-                            parseElement(document.querySelector(element.getAttribute("src")), prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target);
+                            parseElement(document.querySelector(element.getAttribute("src")), prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target,);
                         } else {
                             throw new Error("Using rdfa:copy without href or src");
                         }
@@ -90,7 +90,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
             //console.log(child.nodeName +" "+child.nodeType)
             if ((child.nodeType === 1) && (child.getAttribute("typeof") !== "rdfa:Pattern")) {
                 //rdfa:Patterns must be ignored except when copied (https://www.w3.org/TR/html-rdfa/#implementing-property-copying)
-                parseElement(child, prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target);
+                parseElement(child, prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target, baseIRI);
             }
         });
     }
