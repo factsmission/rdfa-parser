@@ -6,7 +6,7 @@
   "repository": "https://github.com/factsmission/rdfa-parser",
   "author": "Noam Bachmann",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "scripts": {
     "prepublish": "./node_modules/.bin/babel src --out-dir lib",
     "test": "yarn prepublish && node_modules/.bin/mocha",
