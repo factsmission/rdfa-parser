@@ -2,7 +2,7 @@
   "name": "rdfa-parser",
   "version": "0.0.1",
   "description": "A parser for RDFa",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": "https://github.com/factsmission/rdfa-parser",
   "author": "Noam Bachmann",
   "license": "MIT",
