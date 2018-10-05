@@ -5,7 +5,7 @@ const RDFa = require('../lib/index.js')
 describe('Parse', () => {
     describe('an RDFa snippet', () => {
         describe('with base IRI', () => {
-            it("cvb" , (done) => {
+            it("Returns 4 Quads", (done) => {
                 const base = 'https://www.example.org/abc/def';
                 const content = `
                 <html>
@@ -22,7 +22,19 @@ describe('Parse', () => {
                     <div property="http://xmlns.com/foaf/0.1/topic" src="http://www.example.com/b"></div>
                 </body>
                 </html>`
-                RDFa.parseFromString(content, (quad) => console.log(`${quad.subject.value} - ${quad.predicate.value} - ${JSON.stringify(quad.object)}`), base).then(() => done());
+                let quads = "";
+                RDFa.parseFromString(content, (quad) => {
+                    quads = quads + `${quad.subject.value} - ${quad.predicate.value} - ${quad.object.value}\n`
+                    console.log(`${quad.subject.value} - ${quad.predicate.value} - ${quad.object.value}`);
+                }, base).then(() => {
+                    if (quads === "https://www.example.org/abc/def - http://purl.org/dc/terms/creator - Mark Birbeck\n" +
+                        "https://www.example.org/abc/def - http://purl.org/dc/terms/creator - b\n" +
+                        "https://www.example.org/abc/def - http://xmlns.com/foaf/0.1/topic - http://www.example.com/a\n" +
+                        "https://www.example.org/abc/def - http://xmlns.com/foaf/0.1/topic - http://www.example.com/b\n" +
+                        "") {
+                        done()
+                    }
+                });
             })
         })
     })

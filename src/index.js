@@ -1,11 +1,11 @@
 import dataModel from "@rdfjs/data-model";
 
-function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target) {
+function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMapping, subject, target, baseIRI) {
     function invokeTarget(subject, predicate, object) {
         target(dataModel.quad(subject, predicate, object));
     }
     if (element.nodeType === 1) {
-        console.log(element.nodeName);
+        //console.log(element.nodeName);
         if (element.getAttribute("prefix")) {
             let prefixArray = element.getAttribute("prefix").trim().split(/:\s+|\s+/);
             for (let i = 0; i < prefixArray.length; i = i + 2) {
@@ -25,7 +25,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
         } else {
             let oldsubject = subject;
             subject = (element.getAttribute("resource") ?
-                evaluateRealtiveURI(element.getAttribute("resource")) :
+                evaluateRealtiveURI(element.getAttribute("resource"), baseIRI) :
                 (element.getAttribute("typeof") ?
                     dataModel.blankNode() :
                     subject
@@ -37,7 +37,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                         element.getAttribute("property").trim().split(/\s+/).forEach(property => {
                             let predicate = evaluateCURIE(property, prefixMappings, defaultPrefixMapping, noPrefixMapping);
                             if (element.getAttribute("resource")) {
-                                invokeTarget(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource")));
+                                invokeTarget(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource"), baseIRI));
                             } else {
                                 invokeTarget(oldsubject, predicate, subject);
                             }
@@ -46,7 +46,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                     let predicate = dataModel.namedNode("https://www.w3.org/1999/02/22-rdf-syntax-ns#type");
                     let object = evaluateCURIE(type, prefixMappings, defaultPrefixMapping, noPrefixMapping);
                     if (element.getAttribute("resource")) {
-                        invokeTarget(evaluateRealtiveURI(element.getAttribute("resource")), predicate, object);
+                        invokeTarget(evaluateRealtiveURI(element.getAttribute("resource"), baseIRI), predicate, object);
                     } else {
                         invokeTarget(subject, predicate, object);
                     }
@@ -63,18 +63,21 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                             throw new Error("Using rdfa:copy without href or src");
                         }
                     } else if (element.getAttribute("resource")) {
-                        invokeTarget(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource")));
+                        invokeTarget(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource"), baseIRI));
                     } else {
                         let dataType = (element.getAttribute("datatype") ?
                             evaluateCURIE(element.getAttribute("datatype"), prefixMappings, defaultPrefixMapping, noPrefixMapping) :
                             null)
                         let object = (element.getAttribute("content") ?
                             dataModel.literal(element.getAttribute("content"), dataType) :
-                            (element.href ?
-                                dataModel.namedNode(new URL(element.href, window.location.href).href) :
-                                (element.src ?
-                                    dataModel.namedNode(new URL(element.src, window.location.href).href) :
-                                    dataModel.literal(element.innerHTML, dataType)
+                            (element.getAttribute("href") ?
+                                evaluateRealtiveURI(element.getAttribute("href"), baseIRI) :
+                                (element.getAttribute("src") ?
+                                    evaluateRealtiveURI(element.getAttribute("src"), baseIRI) :
+                                    (element.innerHTML ?
+                                        dataModel.literal(element.innerHTML, dataType) :
+                                        dataModel.literal(element.textContent, dataType)
+                                    )
                                 )
                             )
                         );
@@ -93,8 +96,8 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
     }
 }
 
-function evaluateRealtiveURI(relativeURI) {
-    return dataModel.namedNode(new URL(relativeURI, window.location.href).href);
+function evaluateRealtiveURI(relativeURI, base) {
+    return dataModel.namedNode(new URL(relativeURI, base).href);
 }
 
 function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapping) {
@@ -133,7 +136,7 @@ function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapp
  * @param {boolean} [useInitialContext=false] - If https://www.w3.org/2013/json-ld-context/rdfa11 should be loaded as initial set of prefixes
  */
 export function parse(element, target, base, useInitialContext) {
-    let currentSubject = dataModel.namedNode(base || window.location);
+    let currentSubject = dataModel.namedNode(base || window.location.href);
     let context = useInitialContext ?
         {} :
         {
@@ -190,7 +193,7 @@ export function parse(element, target, base, useInitialContext) {
             "sosa":"http://www.w3.org/ns/sosa/",
             "time":"http://www.w3.org/2006/time#"
           };
-    parseElement(element, context, null, null, currentSubject, target);
+    parseElement(element, context, null, null, currentSubject, target, (base || window.location.href));
     return Promise.resolve(true);
 }
 
