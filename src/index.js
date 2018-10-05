@@ -249,5 +249,5 @@ export function parseString(text, target, base, useInitialContext) {
     let domParser = new (require("xmldom").DOMParser)();
     let documentElement = domParser.parseFromString(text,'text/html');
     let element = documentElement.documentElement;
-    return parseDOM(element, target, base, initialContext);
+    return parseDOM(element, target, base, useInitialContext);
 }
