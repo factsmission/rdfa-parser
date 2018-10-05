@@ -10,11 +10,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
             let prefixArray = element.getAttribute("prefix").trim().split(/:\s+|\s+/);
             for (let i = 0; i < prefixArray.length; i = i + 2) {
                 Object.defineProperty(prefixMappings, prefixArray[i], {
-                    value: prefixArray[i + 1],
-                    writable: true
-                })
-                Object.defineProperty(prefixMappings, prefixArray[i], {
-                    value: prefixArray[i + 1],
+                    value: prefixArray[i + 1].toLocaleLowerCase(),
                     writable: true
                 })
             }
@@ -134,7 +130,7 @@ function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapp
             }
             return dataModel.namedNode(defaultPrefixMapping + curie.substring(1));
         }
-        let prefix = curie.substring(0, colonPos);
+        let prefix = curie.substring(0, colonPos).toLocaleLowerCase();
         let suffix = curie.substring(colonPos + 1);
         if (prefixMappings[prefix]) {
             return dataModel.namedNode(prefixMappings[prefix] + suffix);
