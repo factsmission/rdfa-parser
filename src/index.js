@@ -153,7 +153,7 @@ function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapp
  * @param {boolean} [useInitialContext=false] - If https://www.w3.org/2013/json-ld-context/rdfa11 should be loaded as initial set of prefixes
  */
 export function parseDOM(element, target, base, useInitialContext) {
-    let currentSubject = dataModel.namedNode(base || window.location.href);
+    let currentSubject = dataModel.namedNode(base || element.baseURI || window.location.href);
     let context = useInitialContext ?
         {} :
         {
