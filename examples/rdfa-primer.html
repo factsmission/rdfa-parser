@@ -43,14 +43,14 @@
             Phone: <a property="phone" href="tel:+1-617-555-7332">+1 617.555.7332</a><br>
         </p>
         <h3>My buddies</h3>
-        <ul>
-            <li property="knows" typeof="Person">
+        <ul rel="foaf:knows">
+            <li typeof="Person">
                 <a property="homepage" href="http://example.com/bob/"><span property="name">Bob</span></a>
             </li>
-            <li property="knows" resource="#eve" typeof="Person">
+            <li resource="#eve" typeof="Person">
                 <a property="homepage" href="http://example.com/eve/"><span property="name">Eve</span></a>
             </li>
-            <li property="knows" typeof="Person">
+            <li typeof="Person">
                 <a property="homepage" href="http://example.com/manu/"><span property="name">Manu</span></a>
             </li>
         </ul>
