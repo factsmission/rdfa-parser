@@ -1,28 +1,56 @@
-<html xmlns="http://www.w3.org/1999/xhtml" prefix="xsd: http://www.w3.org/2001/XMLSchema#
-        dc: http://purl.org/dc/terms/ bibo: http://purl.org/ontology/bibo/">
+<html>
 
 <head>
-    <title>My Home Page</title>
     <script src="rdfa.js"></script>
     <script type="text/javascript" src="https://retog.github.io/ext-rdflib/latest/rdf.js"></script>
     <script src="example.js"></script>
+    <base href="https://farewellutopia.com/">
+    <title>rdfa-parser</title>
 </head>
 
-<body>
-    <h1 property="dc:title">My home-page</h1>
-    <p>Last modified: <span property="dc:modified" content="2015-09-16T16:00:00-05:00" datatype="xsd:dateTime">16
-            September 2015</span>.</p>
-    I think White's book
-    '<span about="urn:ISBN:0091808189" typeof="bibo:Book" property="dc:title">Canteen Cuisine</span>'
-    is well worth getting since although it's quite advanced stuff, he
-    makes it pretty easy to follow. You might also like
-    <span about="urn:ISBN:1596913614" typeof="bibo:Book" property="dc:description">White's autobiography</span>.
+<body vocab="http://purl.org/dc/terms/" prefix="dc: http://purl.org/dc/terms/ schema: http://schema.org/">
 
-    <div about="http://dbpedia.org/resource/Albert_Einstein" rel="dbp-owl:residence">
-        <span about="http://dbpedia.org/resource/German_Empire"></span>
-        <span about="http://dbpedia.org/resource/Switzerland"></span>
+    <body>
+        <div id="data" type="text/html">
+            <div about='https://farewellutopia.com/separate-publishing'>
+                <ul>
+                    <li>
+                        <a property="http://www.w3.org/2000/01/rdf-schema#seeAlso" resource=https://farewellutopia.com/>
+                            https://farewellutopia.com/
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            
+            <div about='_:0'>
+                <ul>
+                    <li>
+                        <a property="http://www.w3.org/1999/02/22-rdf-syntax-ns#first" resource=https://farewellutopia.com/2010/>
+                            https://farewellutopia.com/2010/
+                        </a>
+                    </li>
+                    <li>
+                        <a property="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest" resource=http://www.w3.org/1999/02/22-rdf-syntax-ns#nil>
+                            http://www.w3.org/1999/02/22-rdf-syntax-ns#nil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div about='https://farewellutopia.com/'>
+                <ul>
+                    <li>
+                        <a property="http://clerezza.org/2009/09/hierarchy#members" resource=_:0>
+                            _:0
+                        </a>
+                    </li>
+                    <li>
+                        <a property="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" resource=http://clerezza.org/2009/09/hierarchy#Collection>
+                            http://clerezza.org/2009/09/hierarchy#Collection
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-
 </body>
-
-</html>
