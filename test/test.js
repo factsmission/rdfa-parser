@@ -23,7 +23,7 @@ describe('Parse', () => {
                 </body>
                 </html>`
                 let quads = "";
-                RDFa.parseFromString(content, (quad) => {
+                RDFa.parseString(content, (quad) => {
                     quads = quads + `${quad.subject.value} - ${quad.predicate.value} - ${quad.object.value}\n`
                     console.log(`${quad.subject.value} - ${quad.predicate.value} - ${quad.object.value}`);
                 }, base).then(() => {

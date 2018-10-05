@@ -24,8 +24,8 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
             //console.log("Pattern: " + element.nodeName + (element.id ? "#" + element.id : ""));
         } else {
             let oldsubject = subject;
-            subject = (element.getAttribute("resource") ?
-                evaluateRealtiveURI(element.getAttribute("resource"), baseIRI) :
+            subject = (element.getAttribute("resource") || element.getAttribute("about") ?
+                evaluateRealtiveURI(element.getAttribute("resource") || element.getAttribute("about"), baseIRI) :
                 (element.getAttribute("typeof") ?
                     dataModel.blankNode() :
                     subject
@@ -38,6 +38,23 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                             let predicate = evaluateCURIE(property, prefixMappings, defaultPrefixMapping, noPrefixMapping);
                             if (element.getAttribute("resource")) {
                                 invokeTarget(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource"), baseIRI));
+                            } else if (element.getAttribute("about")) {
+                                let dataType = (element.getAttribute("datatype") ?
+                                    evaluateCURIE(element.getAttribute("datatype"), prefixMappings, defaultPrefixMapping, noPrefixMapping) :
+                                    null)
+                                invokeTarget(subject, predicate, (element.getAttribute("content") ?
+                                        dataModel.literal(element.getAttribute("content"), dataType) :
+                                        (element.getAttribute("href") ?
+                                            evaluateRealtiveURI(element.getAttribute("href"), baseIRI) :
+                                            (element.getAttribute("src") ?
+                                                evaluateRealtiveURI(element.getAttribute("src"), baseIRI) :
+                                                (element.innerHTML ?
+                                                    dataModel.literal(element.innerHTML, dataType) :
+                                                    dataModel.literal(element.textContent, dataType)
+                                                )
+                                            )
+                                        )
+                                    ));
                             } else {
                                 invokeTarget(oldsubject, predicate, subject);
                             }
@@ -45,8 +62,8 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                     }
                     let predicate = dataModel.namedNode("https://www.w3.org/1999/02/22-rdf-syntax-ns#type");
                     let object = evaluateCURIE(type, prefixMappings, defaultPrefixMapping, noPrefixMapping);
-                    if (element.getAttribute("resource")) {
-                        invokeTarget(evaluateRealtiveURI(element.getAttribute("resource"), baseIRI), predicate, object);
+                    if (element.getAttribute("resource") || element.getAttribute("about")) {
+                        invokeTarget(evaluateRealtiveURI(element.getAttribute("resource") || element.getAttribute("about"), baseIRI), predicate, object);
                     } else {
                         invokeTarget(subject, predicate, object);
                     }
@@ -62,8 +79,8 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, noPrefixMap
                         } else {
                             throw new Error("Using rdfa:copy without href or src");
                         }
-                    } else if (element.getAttribute("resource")) {
-                        invokeTarget(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource"), baseIRI));
+                    } else if (element.getAttribute("resource") || element.getAttribute("about")) {
+                        invokeTarget(oldsubject, predicate, evaluateRealtiveURI(element.getAttribute("resource") || element.getAttribute("about"), baseIRI));
                     } else {
                         let dataType = (element.getAttribute("datatype") ?
                             evaluateCURIE(element.getAttribute("datatype"), prefixMappings, defaultPrefixMapping, noPrefixMapping) :
