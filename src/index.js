@@ -179,7 +179,7 @@ function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapp
  * Parses a Node / HTMLElement with RDFa
  * 
  * @param {Node} element - Node / Element to be parsed
- * @param {Function} target - Function to give (subject,predicate,object). Gets called every time a triple is found
+ * @param {Function} target - Function to give a quad. Gets called every time a quad is found
  * @param {IRI} [base=null] - baseIRI to be used instead of window.location
  * @param {boolean} [useInitialContext=false] - If https://www.w3.org/2013/json-ld-context/rdfa11 should be loaded as initial set of prefixes
  */
@@ -245,7 +245,7 @@ export function parseDOM(element, target, base, useInitialContext) {
     return Promise.resolve(true);
 }
 
-export function parseString(text, target, base, initialContext) {
+export function parseString(text, target, base, useInitialContext) {
     let domParser = new (require("xmldom").DOMParser)();
     let documentElement = domParser.parseFromString(text,'text/html');
     let element = documentElement.documentElement;
