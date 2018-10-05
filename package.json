@@ -1,5 +1,5 @@
 {
-  "name": "rdfa-parser",
+  "name": "@factsmission/rdfa-parser",
   "version": "0.0.1",
   "description": "A parser for RDFa",
   "main": "lib/index.js",
