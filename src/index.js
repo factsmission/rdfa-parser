@@ -135,7 +135,7 @@ function evaluateCURIE(curie, prefixMappings, defaultPrefixMapping, noPrefixMapp
  * @param {IRI} [base=null] - baseIRI to be used instead of window.location
  * @param {boolean} [useInitialContext=false] - If https://www.w3.org/2013/json-ld-context/rdfa11 should be loaded as initial set of prefixes
  */
-export function parse(element, target, base, useInitialContext) {
+export function parseDOM(element, target, base, useInitialContext) {
     let currentSubject = dataModel.namedNode(base || window.location.href);
     let context = useInitialContext ?
         {} :
@@ -197,7 +197,7 @@ export function parse(element, target, base, useInitialContext) {
     return Promise.resolve(true);
 }
 
-export function parseFromString(text, target, base, initialContext) {
+export function parseString(text, target, base, initialContext) {
     let domParser = new (require("xmldom").DOMParser)();
     let documentElement = domParser.parseFromString(text,'text/html');
     let element = documentElement.documentElement;
