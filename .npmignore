@@ -1,2 +1,6 @@
 distribution
 src
+test
+examples
+.travis.yml
+-travis_publish
