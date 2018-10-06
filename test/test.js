@@ -14,7 +14,7 @@ describe('Parse', () => {
                     <script src="rdfa.js"></script>
                     <script type="text/javascript" src="https://retog.github.io/ext-rdflib/latest/rdf.js"></script>
                     <script src="example.js"></script>
-                    <meta about="" property="http://purl.org/dc/terms/creator" content="Mark Birbeck" />
+                    <meta property="http://purl.org/dc/terms/creator" content="Mark Birbeck" />
                 </head>
                 <body>
                     <div property="http://purl.org/dc/terms/creator">b</div>

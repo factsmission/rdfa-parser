@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@nleanba/ndjs@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@nleanba/ndjs/-/ndjs-1.0.1.tgz#c1907c0373655eb28ad5d2646e960b66cc2051e2"
+"@nleanba/ndjs@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@nleanba/ndjs/-/ndjs-1.0.2.tgz#cbaa12c44e9d457f782e300a1d1d8feefd60ea0d"
 
 "@rdfjs/data-model@^1.1.0":
   version "1.1.0"

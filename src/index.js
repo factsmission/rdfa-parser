@@ -159,7 +159,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, vocabulary,
 
 function evaluateSafeCURIEorCURIEorIRI(sCoCoI, prefixMappings, defaultPrefixMapping, base) {
     //console.log("sCoCoI: " + sCoCoI);
-    if (sCoCoI === null) {
+    if (sCoCoI === null || sCoCoI === undefined) {
         return false;
     }
     if (sCoCoI.startsWith("[") && sCoCoI.endsWith("]")) {
@@ -171,7 +171,7 @@ function evaluateSafeCURIEorCURIEorIRI(sCoCoI, prefixMappings, defaultPrefixMapp
 
 function evaluateTERMorCURIEorAbsIRI(toCoAI, vocabulary, prefixMappings, defaultPrefixMapping) {
     //console.log("toCoAI: " + toCoAI);
-    if (toCoAI === null) {
+    if (toCoAI === null || toCoAI === undefined) {
         return false;
     }
     return evaluateTERM(toCoAI, vocabulary) || evaluateCURIE(toCoAI, prefixMappings, defaultPrefixMapping) || evaluateIRI(toCoAI);
