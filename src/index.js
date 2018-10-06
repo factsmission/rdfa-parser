@@ -20,13 +20,11 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, vocabulary,
             //console.log("Pattern: " + element.nodeName + (element.id ? "#" + element.id : ""));
         } else {
             let oldsubject = subject;
-            subject = ((element.getAttribute("resource") || element.getAttribute("about")) ?
-                evaluateSafeCURIEorCURIEorIRI(element.getAttribute("resource") || element.getAttribute("about"), prefixMappings, defaultPrefixMapping, baseIRI) :
+            subject = evaluateSafeCURIEorCURIEorIRI(element.getAttribute("resource") || element.getAttribute("about"), prefixMappings, defaultPrefixMapping, baseIRI) ||
                     (element.getAttribute("typeof") ?
                         dataModel.blankNode() :
                         subject
-                    )
-            );
+                    );
             if (element.getAttribute("typeof")) {
                 element.getAttribute("typeof").trim().split(/\s+/).forEach(type => {
                     if (element.getAttribute("property")) {
@@ -69,7 +67,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, vocabulary,
                         } else {
                             throw new Error("Using rdfa:copy without href or src");
                         }
-                    } else if ((element.getAttribute("resource") || element.getAttribute("about")) && (evaluateSafeCURIEorCURIEorIRI(element.getAttribute("resource") || element.getAttribute("about"), prefixMappings, defaultPrefixMapping, baseIRI))) {
+                    } else if (evaluateSafeCURIEorCURIEorIRI(element.getAttribute("resource") || element.getAttribute("about"), prefixMappings, defaultPrefixMapping, baseIRI)) {
                         invokeTarget(oldsubject, predicate, evaluateSafeCURIEorCURIEorIRI(element.getAttribute("resource") || element.getAttribute("about"), prefixMappings, defaultPrefixMapping, baseIRI), baseIRI);
                     } else {
                         let dataType = evaluateTERMorCURIEorAbsIRI(element.getAttribute("datatype"), vocabulary, prefixMappings, defaultPrefixMapping) || null;
@@ -173,7 +171,7 @@ function evaluateSafeCURIEorCURIEorIRI(sCoCoI, prefixMappings, defaultPrefixMapp
 
 function evaluateTERMorCURIEorAbsIRI(toCoAI, vocabulary, prefixMappings, defaultPrefixMapping) {
     //console.log("toCoAI: " + toCoAI);
-    if (!toCoAI) {
+    if (toCoAI === null) {
         return false;
     }
     return evaluateTERM(toCoAI, vocabulary) || evaluateCURIE(toCoAI, prefixMappings, defaultPrefixMapping) || evaluateIRI(toCoAI);
@@ -294,7 +292,7 @@ export function parseDOM(element, target, base, useInitialContext) {
 }
 
 export function parseString(text, target, base, useInitialContext) {
-    let domParser = new (require("xmldom").DOMParser)();
+    let domParser = new (require("@nleanba/ndjs").DOMParser)();
     let documentElement = domParser.parseFromString(text,'text/html');
     let element = documentElement.documentElement;
     return parseDOM(element, target, base, useInitialContext);

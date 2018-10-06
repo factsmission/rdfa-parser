@@ -27,7 +27,7 @@ module.exports = {
   },
   externals: {
     'node-fetch': 'fetch',
-    'xmldom': 'window'
+    'ndjs': 'window'
   },
   devtool: 'source-map'
 };
