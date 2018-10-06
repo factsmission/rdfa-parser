@@ -1,4 +1,6 @@
-# rdfa-parser[![Build Status](https://travis-ci.org/factsmission/rdfa-parser.svg?branch=master)](https://travis-ci.org/factsmission/rdfa-parser)
+# rdfa-parser
+
+[![Build Status](https://travis-ci.org/factsmission/rdfa-parser.svg?branch=master)](https://travis-ci.org/factsmission/rdfa-parser)
 
 An RDFa parser in JS. Not yet complete but we aim for full support of [HTML+RDFa 1.1](https://www.w3.org/TR/html-rdfa/).
 
