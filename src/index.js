@@ -1,6 +1,6 @@
 import dataModel from "@rdfjs/data-model";
 
-function parseElement(element, prefixMappings, defaultPrefixMapping, vocabulary, subject, target, baseIRI, relation) {
+function parseElement(element, prefixMappings, defaultPrefixMapping, vocabulary, subject, target, baseIRI, relation, revrelation) {
     function invokeTarget(subject, predicate, object) {
         target(dataModel.quad(subject, predicate, object));
     }
@@ -61,9 +61,9 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, vocabulary,
                     let predicate = evaluateTERMorCURIEorAbsIRI(property, vocabulary, prefixMappings, defaultPrefixMapping);
                     if (property === "rdfa:copy") {
                         if (element.getAttribute("href")) {
-                            parseElement(document.querySelector(element.getAttribute("href")), prefixMappings, defaultPrefixMapping, vocabulary, subject, target, baseIRI, relation);
+                            parseElement(document.querySelector(element.getAttribute("href")), prefixMappings, defaultPrefixMapping, vocabulary, subject, target, baseIRI, relation, revrelation);
                         } else if (element.getAttribute("src")) {
-                            parseElement(document.querySelector(element.getAttribute("src")), prefixMappings, defaultPrefixMapping, vocabulary, subject, target, baseIRI, relation);
+                            parseElement(document.querySelector(element.getAttribute("src")), prefixMappings, defaultPrefixMapping, vocabulary, subject, target, baseIRI, relation, revrelation);
                         } else {
                             throw new Error("Using rdfa:copy without href or src");
                         }
@@ -117,12 +117,41 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, vocabulary,
                     }
                 });
             }
+            if (element.getAttribute("rev") || revrelation) {
+                revrelation = element.getAttribute("rev") || revrelation;
+                revrelation.trim().split(/\s+/).forEach(rev => {
+                    if (element.getAttribute("src")) {
+                        let object = evaluateIRI(element.getAttribute("src"), baseIRI);
+                        invokeTarget(object, evaluateTERMorCURIEorAbsIRI(rev, vocabulary, prefixMappings, defaultPrefixMapping), subject);
+                        revrelation = null;
+                    } else if (element.getAttribute("href")) {
+                        let object = evaluateIRI(element.getAttribute("href"), baseIRI);
+                        invokeTarget(object, evaluateTERMorCURIEorAbsIRI(rev, vocabulary, prefixMappings, defaultPrefixMapping), subject);
+                        revrelation = null;
+                    }
+                    if (element.getAttribute("typeof")) {
+                        element.getAttribute("typeof").trim().split(/\s+/).forEach(type => {
+                            let predicate = evaluateTERMorCURIEorAbsIRI(rev, vocabulary, prefixMappings, defaultPrefixMapping);
+                            if (element.getAttribute("resource")) {
+                                invokeTarget(oldsubject, predicate, evaluateIRI(element.getAttribute("resource"), baseIRI));
+                            } else {
+                                invokeTarget(oldsubject, predicate, subject);
+                            }
+                        });
+                        revrelation = null;
+                    } else if (element.getAttribute("resource")) {
+                        let object = evaluateIRI(element.getAttribute("resource"), baseIRI);
+                        invokeTarget(object, evaluateTERMorCURIEorAbsIRI(rev, vocabulary, prefixMappings, defaultPrefixMapping), subject);
+                        revrelation = null;
+                    }
+                });
+            }
         }
         Array.from(element.childNodes).forEach(child => {
             //console.log(child.nodeName +" "+child.nodeType)
             if ((child.nodeType === 1) && (child.getAttribute("typeof") !== "rdfa:Pattern")) {
                 //rdfa:Patterns must be ignored except when copied (https://www.w3.org/TR/html-rdfa/#implementing-property-copying)
-                parseElement(child, prefixMappings, defaultPrefixMapping, vocabulary, subject, target, baseIRI, relation);
+                parseElement(child, prefixMappings, defaultPrefixMapping, vocabulary, subject, target, baseIRI, relation, revrelation);
             }
         });
     }
