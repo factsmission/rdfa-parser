@@ -6,7 +6,7 @@ An RDFa parser in JS. Not yet complete but we aim for full support of [HTML+RDFa
 
 ## Usage
 
-rdfa-parser provides functions to parse HTMLElements and Strings. The call a `callback` function which is invoked with an [rdfjs compliant quad](http://rdf.js.org/#quad-interface).
+rdfa-parser provides functions to parse either HTMLElements or Strings containg RDFa. A `callback` function is invoked whenever a quad has been read. The argument passed to this function is an [rdfjs compliant quad](http://rdf.js.org/#quad-interface).
 
 ### `parseDOM(element,callback,base,useInitialContext)`
 
