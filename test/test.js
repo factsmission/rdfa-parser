@@ -41,13 +41,14 @@ describe('Parse', () => {
                     <html xmlns="http://www.w3.org/1999/xhtml"
                     prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
                     dc: http://dublincore.org/2012/06/14/dcelements#
-                    rdfs: http://www.w3.org/2000/01/rdf-schema#">
-                        <div typeof="rdfs:Resource" about="">
+                    rdfs: http://www.w3.org/2000/01/rdf-schema#
+                    s: https://schema.org/">
+                        <div typeof="s:Thing" about="">
                             <div property="dc:title" content="Another example">
                             </div>
                         </div>
                     </html>`
-                const goal = "https://www.example.org/abc/def - https://www.w3.org/1999/02/22-rdf-syntax-ns#type - http://www.w3.org/2000/01/rdf-schema#Resource\nhttps://www.example.org/abc/def - http://dublincore.org/2012/06/14/dcelements#title - Another example\n"
+                const goal = "https://www.example.org/abc/def - https://www.w3.org/1999/02/22-rdf-syntax-ns#type - https://schema.org/Thing\nhttps://www.example.org/abc/def - http://dublincore.org/2012/06/14/dcelements#title - Another example\n"
                 let quads = "";
                 RDFa.parseString(content, (quad) => {
                     quads = quads + `${quad.subject.value} - ${quad.predicate.value} - ${quad.object.value}\n`
