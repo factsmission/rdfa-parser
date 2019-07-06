@@ -22,21 +22,20 @@ describe('Parse', () => {
                     <div property="http://xmlns.com/foaf/0.1/topic" src="http://www.example.com/b"></div>
                 </body>
                 </html>`
+                const goal = "https://www.example.org/abc/def - http://purl.org/dc/terms/creator - Mark Birbeck\nhttps://www.example.org/abc/def - http://purl.org/dc/terms/creator - b\nhttps://www.example.org/abc/def - http://xmlns.com/foaf/0.1/topic - http://www.example.com/a\nhttps://www.example.org/abc/def - http://xmlns.com/foaf/0.1/topic - http://www.example.com/b\n"
                 let quads = "";
                 RDFa.parseString(content, (quad) => {
                     quads = quads + `${quad.subject.value} - ${quad.predicate.value} - ${quad.object.value}\n`
                     console.log(`${quad.subject.value} - ${quad.predicate.value} - ${quad.object.value}`);
                 }, base).then(() => {
-                    if (quads === "https://www.example.org/abc/def - http://purl.org/dc/terms/creator - Mark Birbeck\n" +
-                        "https://www.example.org/abc/def - http://purl.org/dc/terms/creator - b\n" +
-                        "https://www.example.org/abc/def - http://xmlns.com/foaf/0.1/topic - http://www.example.com/a\n" +
-                        "https://www.example.org/abc/def - http://xmlns.com/foaf/0.1/topic - http://www.example.com/b\n" +
-                        "") {
-                        done()
+                    if (quads === goal) {
+                        done();
+                    } else {
+                        done(new Error('Expected: \n' + goal));
                     }
                 });
             })
-            it("Including about=\"\"", (done) => {
+            it('Including about=""', (done) => {
                 const base = 'https://www.example.org/abc/def';
                 const content = `
                     <html xmlns="http://www.w3.org/1999/xhtml"
@@ -48,15 +47,16 @@ describe('Parse', () => {
                             </div>
                         </div>
                     </html>`
+                const goal = "https://www.example.org/abc/def - https://www.w3.org/1999/02/22-rdf-syntax-ns#type - http://www.w3.org/2000/01/rdf-schema#Resource\nhttps://www.example.org/abc/def - http://dublincore.org/2012/06/14/dcelements#title - Another example\n"
                 let quads = "";
                 RDFa.parseString(content, (quad) => {
                     quads = quads + `${quad.subject.value} - ${quad.predicate.value} - ${quad.object.value}\n`
                     console.log(`${quad.subject.value} - ${quad.predicate.value} - ${quad.object.value}`);
                 }, base).then(() => {
-                    if (quads === "https://www.example.org/abc/def - https://www.w3.org/1999/02/22-rdf-syntax-ns#type - http://www.w3.org/2000/01/rdf-schema#Resource\n" +
-                        "https://www.example.org/abc/def - http://dublincore.org/2012/06/14/dcelements#title - Another example\n" +
-                        "") {
-                        done()
+                    if (quads === goal) {
+                        done();
+                    } else {
+                        done(new Error('Expected: \n' + goal));
                     }
                 });
             })
