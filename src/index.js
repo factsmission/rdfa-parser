@@ -52,7 +52,7 @@ function parseElement(element, prefixMappings, defaultPrefixMapping, vocabulary,
                             }
                         });
                     }
-                    let predicate = dataModel.namedNode("https://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+                    let predicate = dataModel.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
                     let object = evaluateTERMorCURIEorAbsIRI(type, vocabulary, prefixMappings,defaultPrefixMapping);
                     invokeTarget(evaluateSafeCURIEorCURIEorIRI(element.getAttribute("resource") || element.getAttribute("about"), prefixMappings, defaultPrefixMapping, baseIRI) || subject, predicate, object);
                 });
